@@ -85,9 +85,12 @@ class TicketsController {
 
   // В контроллере
   async getDocxTicket(req, res) {
+    const { id } = req.params; // Извлекаем id из параметров запроса
+
     try {
-      const pdfBytes = await TicketsService.createPdf(12);
+      const pdfBytes = await TicketsService.createPdf(id); // Передаем id в метод
       console.log(pdfBytes);
+
       // Создание PDF
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader("Content-Disposition", "attachment; filename=ticket.pdf");
