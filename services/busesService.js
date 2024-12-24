@@ -292,13 +292,32 @@ class BusesService {
       const currentMinutes = String(currentDateTime.getMinutes());
       const currentTime = `${currentHours}:${currentMinutes}`; // Текущее время в формате HH:mm
 
+      // const filteredRegisterBooks = finalArray.filter((registerBook) => {
+      //   const tripDate = registerBook.DateTime; // Дата отправления
+      //   const tripStartTime = registerBook.StartTime; // Время отправления
+
+      //   // Проверяем, если дата отправления меньше текущей даты
+      //   if (tripDate < currentDate) {
+      //     return true; // Если дата меньше, включаем в результат
+      //   }
+
+      //   // Если даты равны, сравниваем время
+      //   if (tripDate === currentDate) {
+      //     return currentTime < tripStartTime; // Используем currentTime для сравнения
+      //   }
+
+      //   return false; // Если дата больше, не включаем
+      // });
+
+      // Теперь filteredRegisterBooks содержит только те объекты, у которых полное время отправления меньше текущего
+
       const filteredRegisterBooks = finalArray.filter((registerBook) => {
         const tripDate = registerBook.DateTime; // Дата отправления
         const tripStartTime = registerBook.StartTime; // Время отправления
 
-        // Проверяем, если дата отправления меньше текущей даты
-        if (tripDate < currentDate) {
-          return true; // Если дата меньше, включаем в результат
+        // Проверяем, если дата отправления больше текущей даты
+        if (tripDate > currentDate) {
+          return true; // Если дата больше, включаем в результат
         }
 
         // Если даты равны, сравниваем время
@@ -306,10 +325,8 @@ class BusesService {
           return currentTime < tripStartTime; // Используем currentTime для сравнения
         }
 
-        return false; // Если дата больше, не включаем
+        return false; // Если дата меньше, не включаем
       });
-
-      // Теперь filteredRegisterBooks содержит только те объекты, у которых полное время отправления меньше текущего
 
       return filteredRegisterBooks; // Возвращаем данные для дальнейшего использования
     } catch (error) {

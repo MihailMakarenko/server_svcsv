@@ -223,7 +223,7 @@ class TicketsService {
       const lat = data[0].lat;
       const lon = data[0].lon;
 
-      const accessKey = "84438872-27bf-429f-8949-0645956e31a0";
+      const accessKey = "05f70fe6-5482-4782-8d9d-717c1aa58982";
       const headers = {
         "X-Yandex-Weather-Key": accessKey,
       };
@@ -251,6 +251,8 @@ class TicketsService {
   }
 
   async createPdf(ticketId) {
+    console.log("ent");
+    console.log(ticketId);
     try {
       // Получаем информацию о билете
       const userTicket = await this.getFullInformTicket(ticketId);
@@ -264,12 +266,16 @@ class TicketsService {
       return new Promise(async (resolve, reject) => {
         let weatherInfo = {
           temperature: "Нет информации",
-          isRain: "Нет",
+          isRain: "Нет информации",
         };
 
+        console.log(userTicket);
+        console.log(new Date().toISOString().split("T")[0]);
         // Проверяем, совпадает ли дата отправления с текущей датой
         if (userTicket.DateTime === new Date().toISOString().split("T")[0]) {
           weatherInfo = await this.getWeather(userTicket.FinishCity); // Получаем информацию о погоде
+          console.log("273");
+          console.log(weatherInfo);
         }
 
         const doc = new PDFDocument({ margin: 50 });

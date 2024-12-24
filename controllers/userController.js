@@ -148,6 +148,7 @@ class UserController {
             token: `Bearer ${token}`,
             name: candidate.FirstName,
             idUser: candidate.UserId,
+            role: candidate.Role,
           });
         } else {
           return res.status(401).json({ message: "Пароли не совпадают" });
