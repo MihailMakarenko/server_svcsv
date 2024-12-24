@@ -24,7 +24,7 @@ const Buses = sequelize.define("Buses", {
     type: DataTypes.INTEGER,
     allowNull: false,
     validate: {
-      min: 18,
+      min: 9,
       max: 54,
     },
   },

@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../db");
 const Trip = require("./trips");
+const Ticket = require("./tickets");
 
 const Feedback = sequelize.define("Feedback", {
   FeedbackId: {
@@ -12,16 +13,16 @@ const Feedback = sequelize.define("Feedback", {
     type: DataTypes.INTEGER,
     allowNull: true,
     validate: {
-      min: 1,
+      min: 0,
       max: 5,
     },
   },
-  TripId: {
+  TicketId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: Trip,
-      key: "TripId",
+      model: Ticket,
+      key: "TicketId",
     },
   },
 });

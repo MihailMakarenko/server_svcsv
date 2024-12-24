@@ -5,8 +5,17 @@ const ScheduleService = require("../services/scheduleService"); // Импорт 
 class ScheduleController {
   // 1. Создание новой
   async create(req, res) {
-    const { Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday } =
-      req.body;
+    console.log("Дошли до сюда");
+    const {
+      Monday,
+      Tuesday,
+      Wednesday,
+      Thursday,
+      Friday,
+      Saturday,
+      Sunday,
+      TripId,
+    } = req.body;
 
     try {
       const schedule = await ScheduleService.create({
@@ -17,6 +26,7 @@ class ScheduleController {
         Friday,
         Saturday,
         Sunday,
+        TripId,
       });
       return res.status(201).json(schedule); // 201 Создано
     } catch (error) {

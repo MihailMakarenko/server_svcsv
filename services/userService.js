@@ -1,6 +1,7 @@
 // services/userService.js
 const User = require("../models/user"); // Импорт модели User
 const bcrypt = require("bcryptjs");
+const nodemailer = require("nodemailer");
 
 class UserService {
   async getAllUsers() {
@@ -42,6 +43,12 @@ class UserService {
 
   async comparePasswords(candidatePassword, hashedPassword) {
     return bcrypt.compareSync(candidatePassword, hashedPassword);
+  }
+
+  async getEmailUserWhoGetNewsletter() {
+    const users = await User.findAll({ where: { isGetNewsletter: true } });
+    console.log(users);
+    return users.map((user) => user.dataValues.Email); // Предположим, что поле email существует
   }
 }
 

@@ -1,4 +1,5 @@
 // controllers/userController.js
+const userService = require("../services/userService");
 const UserService = require("../services/userService"); // Импорт сервиса UserService
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -16,9 +17,9 @@ class UserController {
 
   // Получить пользователя по UserId
   async getUserById(req, res) {
-    const { UserId } = req.params;
+    const { id } = req.params;
     try {
-      const user = await UserService.getUserById(UserId);
+      const user = await UserService.getUserById(id);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
@@ -38,6 +39,7 @@ class UserController {
       isGetNotifications,
       Password,
       Role,
+      isGetNewsletter,
     } = req.body;
 
     try {
@@ -49,6 +51,7 @@ class UserController {
         Password,
         isGetNotifications,
         Role: "user",
+        isGetNewsletter,
       });
       res.status(201).json(user);
     } catch (error) {
@@ -59,30 +62,49 @@ class UserController {
 
   // Обновить пользователя
   async updateUser(req, res) {
-    const { UserId } = req.params;
+    console.log("Запрос на обновление пользователя");
+    const { id } = req.params;
     const {
       FirstName,
       LastName,
       Email,
       PhoneNumber,
       isGetNotifications,
-      Password,
+      isGetNewsletter,
     } = req.body;
-
+    console.log(isGetNotifications);
     try {
-      const updatedUser = await UserService.updateUser(UserId, {
-        FirstName,
-        LastName,
-        Email,
-        PhoneNumber,
-        isGetNotifications,
-        Password,
-      });
+      // Получаем текущие данные пользователя
+      const currentUser = await UserService.getUserById(id);
+      if (!currentUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Обновляем только переданные поля
+      const updatedData = {
+        FirstName: FirstName !== undefined ? FirstName : currentUser.FirstName,
+        LastName: LastName !== undefined ? LastName : currentUser.LastName,
+        Email: Email !== undefined ? Email : currentUser.Email,
+        PhoneNumber:
+          PhoneNumber !== undefined ? PhoneNumber : currentUser.PhoneNumber,
+        isGetNotifications:
+          isGetNotifications !== undefined
+            ? isGetNotifications
+            : currentUser.isGetNotifications,
+        isGetNewsletter:
+          isGetNewsletter !== undefined
+            ? isGetNewsletter
+            : currentUser.isGetNewsletter,
+      };
+
+      // Если пароль изменен, хэшируем его
+
+      // Обновляем пользователя в базе данных
+      const updatedUser = await UserService.updateUser(id, updatedData);
       res.status(200).json(updatedUser);
     } catch (error) {
-      res
-        .status(error.message === "User not found" ? 404 : 400)
-        .json({ message: error.message });
+      console.error("Ошибка при обновлении пользователя:", error);
+      res.status(400).json({ message: error.message });
     }
   }
 
@@ -120,7 +142,7 @@ class UserController {
               role: candidate.Role,
             },
             process.env.SECRET_KEY,
-            { expiresIn: "1h" }
+            { expiresIn: "10h" }
           );
           return res.status(200).json({
             token: `Bearer ${token}`,
@@ -138,6 +160,18 @@ class UserController {
     } catch (err) {
       console.error("Ошибка при входе:", err);
       return res.status(500).json({ message: "Внутренняя ошибка сервера" });
+    }
+  }
+
+  async notificaaton(req, res) {
+    try {
+      const response = await userService.getEmailUserWhoGetNewsletter();
+      console.log("aaa");
+      console.log(response);
+      return res.json(response); // Отправка ответа клиенту
+    } catch (error) {
+      console.error("Ошибка при получении пользователей:", error);
+      return res.status(500).json({ error: "Ошибка сервера" });
     }
   }
 }

@@ -12,6 +12,7 @@ class RouteService {
   }
 
   async createRoute(routeData) {
+    console.log(routeData);
     return await Route.create(routeData);
   }
 
@@ -83,6 +84,28 @@ class RouteService {
     } catch (error) {
       console.error("Ошибка при получении городов:", error);
       throw error; // Обработка ошибки
+    }
+  }
+
+  async getRoutesWithPagination(page, limit) {
+    const offset = (page - 1) * limit;
+    try {
+      const routes = await Route.findAll({
+        limit: limit,
+        offset: offset,
+      });
+
+      const totalCount = await Route.count();
+
+      return {
+        routes,
+        totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+        currentPage: page,
+      };
+    } catch (error) {
+      console.error("Ошибка при получении маршрутов:", error);
+      throw error; // Обработка или повторное выбрасывание ошибки
     }
   }
 }

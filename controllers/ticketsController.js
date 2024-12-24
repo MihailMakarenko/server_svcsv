@@ -14,9 +14,11 @@ class TicketsController {
 
   // Получить билет по TicketId
   async getTicketById(req, res) {
-    const { TicketId } = req.params;
+    console.log(req.params);
+    const { id } = req.params;
+    console.log(id);
     try {
-      const ticket = await TicketsService.getTicketById(TicketId);
+      const ticket = await TicketsService.getTicketById(id);
       if (!ticket) {
         return res.status(404).json({ message: "Билет не найден" });
       }
@@ -47,8 +49,9 @@ class TicketsController {
 
   // Обновить билет
   async updateTicket(req, res) {
+    console.log(req.params);
     const { TicketId } = req.params;
-    const { Status, Promocode, UserId, RegisterId } = req.body;
+    const { Status, Promocode, UserId, RegisterId, Seats } = req.body;
 
     try {
       const updatedTicket = await TicketsService.updateTicket(TicketId, {
@@ -56,6 +59,7 @@ class TicketsController {
         Promocode,
         UserId,
         RegisterId,
+        Seats,
       });
       res.status(200).json(updatedTicket);
     } catch (error) {

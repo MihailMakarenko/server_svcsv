@@ -28,6 +28,8 @@ class RouteController {
 
   // Создать новый маршрут
   async createRoute(req, res) {
+    console.log("Мы дошли до сюда");
+    console.log(req.body);
     const { StartCity, FinishCity, Distance } = req.body;
     try {
       const route = await RouteService.createRoute({
@@ -38,6 +40,17 @@ class RouteController {
       res.status(201).json(route);
     } catch (error) {
       res.status(400).json({ message: error.message });
+    }
+  }
+
+  async getWithPagination(req, res) {
+    console.log("или тут");
+    try {
+      const { Page = 1, Limit = 8 } = req.query;
+      const routes = await RouteService.getRoutesWithPagination(Page, Limit);
+      res.status(200).json(routes);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
   }
 
@@ -74,6 +87,7 @@ class RouteController {
 
   async getUniqueCities(req, res) {
     try {
+      console.log("AAAAAAAAA");
       const cities = await RouteService.getUniqueCities();
       res.status(200).json(cities);
     } catch (error) {
@@ -81,6 +95,18 @@ class RouteController {
       res
         .status(500)
         .json({ message: "Ошибка при получении уникальных городов" });
+    }
+  }
+
+  async getRouteIdByCities(req, res) {
+    console.log("ХХАХА");
+    console.log("Мы тут");
+    const { StartCity, FinishCity } = req.params;
+    try {
+      const response = await RouteService.getRouteId(StartCity, FinishCity);
+      res.status(200).json(response);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
   }
 }

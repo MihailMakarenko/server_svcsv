@@ -1,4 +1,5 @@
 // controllers/busesController.js
+const { response } = require("express");
 const BusesService = require("../services/busesService"); // Импорт сервиса BusesService
 
 class BusesController {
@@ -6,6 +7,18 @@ class BusesController {
   async getAllBuses(req, res) {
     try {
       const buses = await BusesService.getAllBuses();
+      res.status(200).json(buses);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  async getWithPagination(req, res) {
+    console.log("Или тут");
+    try {
+      const { Page = 1, Limit = 8 } = req.query;
+      console.log(req.query);
+      const buses = await BusesService.getBusesWithPagination(Page, Limit);
       res.status(200).json(buses);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -28,6 +41,8 @@ class BusesController {
 
   // Создать новый автобус
   async createBus(req, res) {
+    console.log("Тестируем createBus");
+    console.log(req.body);
     const { BusNumber, NameCompany, Model, Capacity } = req.body;
     try {
       const bus = await BusesService.createBus({
@@ -38,6 +53,7 @@ class BusesController {
       });
       res.status(201).json(bus);
     } catch (error) {
+      console.log(error.message);
       res.status(400).json({ message: error.message });
     }
   }
@@ -77,6 +93,7 @@ class BusesController {
   async getFullInfoWithOccupiedSeats(req, res) {
     const { startCity, finishCity, date } = req.query;
 
+    console.log(req.query);
     console.log("Aaaa");
     try {
       const response = await BusesService.getFullInfoWithOccupiedSeats(
@@ -84,11 +101,21 @@ class BusesController {
         finishCity,
         date
       );
+      console.log("123");
+      console.log(response);
       res.status(200).send(response);
     } catch (error) {
       res
         .status(error.message === "Автобус не найден" ? 404 : 500)
         .json({ message: error.message });
+    }
+  }
+
+  async getAllBusNumber(req, res) {
+    try {
+      const response = await BusesService.getAllBusNumber();
+    } catch (error) {
+      res.status(404).json({ message: error.message });
     }
   }
 }

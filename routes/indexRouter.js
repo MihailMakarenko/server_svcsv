@@ -13,6 +13,8 @@ const tickets = require("./ticketsRouter");
 const trips = require("./tripsRouter");
 const user = require("./userRouter");
 const busRouteRouter = require("./routeRouter");
+const mail = require("./mailRouter");
+const fullInform = require("./fullInformRouter");
 
 router.use("/buses", buses);
 router.use("/callback", callback);
@@ -26,5 +28,7 @@ router.use("/tickets", tickets);
 router.use("/trips", trips);
 router.use("/user", user);
 router.use("/route", busRouteRouter);
+router.use("/mail", mail);
+router.use("/fullInform", fullInform);
 
 module.exports = router;

@@ -3,6 +3,14 @@ const router = new Router();
 const routeController = require("../controllers/routeController");
 
 // 1. Создание нового маршрута
+router.get("/getUniqueCities", routeController.getUniqueCities);
+
+router.get(
+  "/getRouteIdByCities/:StartCity/:FinishCity",
+  routeController.getRouteIdByCities
+);
+
+router.get("/withPagination", routeController.getWithPagination);
 router.post("/", routeController.createRoute);
 
 // 2. получение всех маршрутов

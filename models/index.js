@@ -62,7 +62,8 @@ Tickets.belongsTo(PromoCode, {
 // 10. Маршруты (Route) и поездки (Trips)
 Route.hasMany(Trips, { foreignKey: "RouteId", onDelete: "CASCADE" });
 Trips.belongsTo(Route, { foreignKey: "RouteId" });
-
+User.hasMany(Tickets, { foreignKey: "UserId", onDelete: "CASCADE" });
+Tickets.belongsTo(User, { foreignKey: "UserId", as: "user" });
 // 11. Билеты (Tickets) и пассажиры (Passengers) через связь многие-ко-многим
 Tickets.belongsToMany(Passengers, {
   through: "Tickets_Passengers",

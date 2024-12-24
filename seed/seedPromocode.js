@@ -4,22 +4,26 @@ const PromoCode = require("../models/promoCode"); // Импорт модели P
 class SeedPromoCodes {
   async seed() {
     const promoCodes = [
-      {
-        Code: "SUMMER2023",
-        PercentageDiscount: 15,
-      },
-      {
-        Code: "WINTER2023",
-        PercentageDiscount: 20,
-      },
-      {
-        Code: "SPRING2023",
-        PercentageDiscount: 25,
-      },
-      {
-        Code: "FALL2023",
-        PercentageDiscount: 30,
-      },
+      { Code: "SUMMER2023", PercentageDiscount: 15 },
+      { Code: "WINTER2023", PercentageDiscount: 20 },
+      { Code: "SPRING2023", PercentageDiscount: 25 },
+      { Code: "FALL2023", PercentageDiscount: 30 },
+      { Code: "FLASHSALE2023", PercentageDiscount: 10 },
+      { Code: "BLACKFRIDAY", PercentageDiscount: 50 },
+      { Code: "CYBERMONDAY", PercentageDiscount: 40 },
+      { Code: "NEWYEAR2024", PercentageDiscount: 35 },
+      { Code: "EASTER2023", PercentageDiscount: 20 },
+      { Code: "VALENTINE2023", PercentageDiscount: 15 },
+      { Code: "BACKTOSCHOOL", PercentageDiscount: 25 },
+      { Code: "MEMORIALDAY", PercentageDiscount: 30 },
+      { Code: "LABORDAY", PercentageDiscount: 20 },
+      { Code: "HALLOWEEN2023", PercentageDiscount: 15 },
+      { Code: "THANKSGIVING", PercentageDiscount: 10 },
+      { Code: "AUTUMN2023", PercentageDiscount: 20 },
+      { Code: "XMAS2023", PercentageDiscount: 25 },
+      { Code: "WINTERSALE", PercentageDiscount: 30 },
+      { Code: "SPRINGSALE", PercentageDiscount: 15 },
+      { Code: "SUMMERCLEARANCE", PercentageDiscount: 40 },
     ];
 
     try {

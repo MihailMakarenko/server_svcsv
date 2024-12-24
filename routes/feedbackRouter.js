@@ -5,6 +5,8 @@ const feedbackController = require("../controllers/feedbackController");
 // 1. Создание нового отзыва
 router.post("/", feedbackController.addFeedback);
 
+// router.get("/getByTicketId", feedbackController.getFeedbackByTicketId)
+
 // 2. Получение отзыва по ID
 router.get("/:id", feedbackController.getFeedbackByTicketId);
 

@@ -8,11 +8,9 @@ const UserService = require("./userService");
 const RegisterBookService = require("./registerBookService");
 const TripsService = require("./tripsService");
 const RouteService = require("./routeService");
+const BusService = require("./busesService");
 
 const { where } = require("sequelize");
-
-// const { PDFDocument, rgb } = require("pdf-lib");
-// const fontkit = require("fontkit"); // Импортируйте fontkit
 
 class TicketsService {
   async getAllTickets() {
@@ -20,6 +18,7 @@ class TicketsService {
   }
 
   async getTicketById(TicketId) {
+    console.log(TicketId);
     return await Tickets.findByPk(TicketId);
   }
 
@@ -179,7 +178,7 @@ class TicketsService {
               `Маршрут не найден для Поездки с ID ${trip.TripId}.`
             );
           }
-          const BusService = require("./busesService");
+
           console.log("Мы туттт");
           console.log(registerBook.BusId);
           const bus = await BusService.getBusById(registerBook.BusId);
@@ -406,6 +405,7 @@ class TicketsService {
     const tickets = await Tickets.findAll({
       where: {
         RegisterId: registerBookId,
+        Status: "Заказан",
       },
     });
 
@@ -418,6 +418,16 @@ class TicketsService {
     const sortedOccupiedSeats = occupiedSeats.sort((a, b) => a - b);
 
     return sortedOccupiedSeats; // Возвращаем массив занятых мест
+  }
+
+  async getTicketsByRegisterBook(registerBook) {
+    const tickets = await Tickets.findAll({
+      where: {
+        RegisterId: registerBookId,
+        NotificationSent: false,
+      },
+    });
+    return tickets;
   }
 }
 

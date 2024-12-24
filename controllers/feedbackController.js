@@ -4,9 +4,10 @@ const FeedbackService = require("../services/feedbackService"); // Импорт 
 class FeedbackController {
   // Получить отзывы по TicketId
   async getFeedbackByTicketId(req, res) {
-    const { TicketId } = req.params;
+    console.log("Мы тт");
+    const { id } = req.params;
     try {
-      const feedbacks = await FeedbackService.getFeedbackByTicketId(TicketId);
+      const feedbacks = await FeedbackService.getFeedbackByTicketId(id);
       res.status(200).json(feedbacks);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -26,10 +27,13 @@ class FeedbackController {
 
   // Обновить отзыв
   async updateFeedback(req, res) {
-    const { FeedbackId } = req.params;
+    console.log(req.body);
+    const { id } = req.params;
     const { Rating } = req.body;
+    // console.log(`рейтинг ${req.body}`);
+    // console.log(Rating);
     try {
-      const feedback = await FeedbackService.updateFeedback(FeedbackId, {
+      const feedback = await FeedbackService.updateFeedback(id, {
         Rating,
       });
       res.status(200).json(feedback);

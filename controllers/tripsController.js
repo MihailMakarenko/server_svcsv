@@ -28,6 +28,7 @@ class TripsController {
 
   // Создать новую поездку
   async createTrip(req, res) {
+    console.log(req.body);
     const { RouteId, StartTime, FinishTime, Price } = req.body;
 
     try {

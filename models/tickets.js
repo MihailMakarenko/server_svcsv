@@ -25,14 +25,22 @@ const Tickets = sequelize.define("Tickets", {
   },
   RegisterId: {
     type: DataTypes.INTEGER,
+    allowNull: true, // Разрешить null
     references: {
       model: RegisterBook,
       key: "RegisterBookId",
     },
+    onDelete: "CASCADE",
   },
   Seats: {
     type: DataTypes.ARRAY(DataTypes.INTEGER), // Adding the Seats field as an array of integers
     allowNull: false, // You can set this to false if you want to make it mandatory
+  },
+  NotificationSent: {
+    // New field to indicate if a notification has been sent
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false, // Default value is false
   },
 });
 

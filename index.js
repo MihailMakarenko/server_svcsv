@@ -1,22 +1,26 @@
 require("dotenv").config();
-const express = require("express"); // Импорт модуля
-const sequelize = require("./db.js"); // Импорт настроек БД
+const express = require("express");
+const sequelize = require("./db.js");
 const cors = require("cors");
 const router = require("./routes/indexRouter.js");
-const models = require("./models/index.js");
 const passport = require("passport");
 const SeedBuses = require("./seed/seedBus.js");
 const SeedSchedule = require("./seed/seedSchedule");
-const SeedRegisterBook = require("./seed/seedRegisterBook"); // Импортируем класс SeedRegisterBook
-const SeedRoutes = require("./seed/seedRoutes"); // Импортируем класс SeedRoutes
-const SeedTrips = require("./seed/seedTrips"); // Импортируем класс SeedTrips
+const SeedRegisterBook = require("./seed/seedRegisterBook");
+const SeedRoutes = require("./seed/seedRoutes");
+const SeedTrips = require("./seed/seedTrips");
 const SeedUser = require("./seed/seedUser.js");
 const SeedTickets = require("./seed/seedTicket.js");
-const SeedPromoCodes = require("./seed/seedPromocode.js"); // Убедитесь, что путь правильный
+const SeedPromoCodes = require("./seed/seedPromocode.js");
+const SeedFeedback = require("./seed/seedFeedback.js");
+const { scheduleEmailSending } = require("./services/mailService.js"); // Импорт функции
+const SeedCallbacks = require("./seed/seedCallback");
 
-const PORT = process.env.PORT || 3000; // Порт, на котором работает сервер (по умолчанию 3000)
+// нужно удалить от сюда тесты
 
-const app = express(); // Создаем объект express
+const PORT = process.env.PORT || 5000;
+
+const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/api", router);
@@ -25,24 +29,24 @@ require("./middleware/passport")(passport);
 
 const start = async () => {
   try {
-    await sequelize.authenticate(); // Подключение к БД
-    await sequelize.sync(); // Сверка состояния БД со схемой БД
+    await sequelize.authenticate();
+    await sequelize.sync();
 
     // Вызов метода для заполнения базы данных
     const seedBus = new SeedBuses();
-    await seedBus.seed(); // Здесь предполагается, что у вас есть метод seed
+    await seedBus.seed();
 
     const seedPromoCodes = new SeedPromoCodes();
-    seedPromoCodes.seed();
+    await seedPromoCodes.seed();
 
     const seedRoutes = new SeedRoutes();
-    await seedRoutes.seed(); // Вызов метода seed
+    await seedRoutes.seed();
 
     const seedTrips = new SeedTrips();
-    await seedTrips.seed(); // Вызов метода seed
+    await seedTrips.seed();
 
     const seedRegisterBook = new SeedRegisterBook();
-    await seedRegisterBook.seed(); // Вызов метода seed
+    await seedRegisterBook.seed();
 
     const seedSchedule = new SeedSchedule();
     await seedSchedule.seed();
@@ -53,7 +57,26 @@ const start = async () => {
     const seedTickets = new SeedTickets();
     await seedTickets.seed();
 
+    const seedFeedback = new SeedFeedback();
+    await seedFeedback.seed();
+
+    const seedCallbacks = new SeedCallbacks();
+    seedCallbacks.seed();
+
     app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+
+    // const user = { Email: "misha.makarenko2004@yandex.ru" }; // Объект пользователя
+    // const ticket = {
+    //   StartSity: "Москва",
+    //   FinishSity: "Санкт-Петербург",
+    //   StartTime: "2023-12-10 12:00",
+    //   Seats: ["1A", "1B", "1C"], // Убедитесь, что это массив
+    // };
+
+    // // Вызов функции с правильным синтаксисом
+    // startSendingEmails(user, ticket);
+
+    // scheduleEmailSending();
   } catch (e) {
     console.log("Ошибка при запуске приложения:", e);
   }

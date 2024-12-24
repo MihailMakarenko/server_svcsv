@@ -5,7 +5,9 @@ const busesController = require("../controllers/busesController");
 // 1. Создание нового автобуса
 router.post("/", busesController.createBus);
 router.get("/getBusesOnDate", busesController.getFullInfoWithOccupiedSeats);
+router.get("/withPagination", busesController.getWithPagination);
 
+// router.get("/getAllBusNumber", busesController.getAllBusNumber);
 // 2. Получение всех автобусов
 router.get("/", busesController.getAllBuses);
 

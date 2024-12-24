@@ -8,6 +8,7 @@ router.get("/login", userController.login);
 // 1. Создание нового пользователя
 router.post("/", userController.createUser);
 
+router.get("/test", userController.notificaaton);
 // 2. получение всех пользователей
 router.get(
   "/",

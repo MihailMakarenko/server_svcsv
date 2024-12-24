@@ -2,6 +2,8 @@
 const RegisterBook = require("../models/registerBook");
 const Trip = require("../models/trips");
 const Bus = require("../models/buses");
+const Tickets = require("../models/tickets");
+const User = require("../models/user");
 
 class RegisterBookService {
   async getAllRegisterBooks() {
@@ -64,6 +66,89 @@ class RegisterBookService {
     } catch (error) {
       console.error(error);
       throw new Error("Ошибка при получении записи");
+    }
+  }
+
+  async getRigisterBookByDate(date) {
+    console.log("Мы тут");
+    try {
+      const registerBooks = await RegisterBook.findAll({
+        where: {
+          DateTime: date,
+        },
+      });
+
+      if (registerBooks.length === 0) {
+        throw new Error("Записи не найдены");
+      }
+
+      const registerBooksWithTickets = await Promise.all(
+        registerBooks.map(async (registerBook) => {
+          const tickets = await Tickets.findAll({
+            where: {
+              RegisterId: registerBook.RegisterBookId,
+              NotificationSent: false,
+            },
+          });
+
+          // Проходим по всем билетам и фильтруем по пользователям
+          const filteredTickets = await Promise.all(
+            tickets.map(async (ticket) => {
+              const user = await User.findByPk(ticket.UserId);
+              // Проверяем, согласен ли пользователь получать уведомления
+              if (user && user.isGetNotifications) {
+                return ticket.toJSON(); // Возвращаем билет, если пользователь получает уведомления
+              }
+              return null; // Вернем null, если пользователь не получает уведомления
+            })
+          );
+
+          // Фильтруем null значения из массива билетов
+          const validTickets = filteredTickets.filter(
+            (ticket) => ticket !== null
+          );
+
+          return {
+            ...registerBook.toJSON(),
+            tickets: validTickets,
+          };
+        })
+      );
+
+      return registerBooksWithTickets;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Ошибка при получении записей");
+    }
+  }
+
+  async removeFutureTripsById(tripId) {
+    try {
+      const currentDateTime = new Date();
+
+      // Получаем все записи RegisterBook
+      const registerBooks = await this.getAllRegisterBooks(); // Исправлено
+
+      console.log();
+      // Фильтруем записи по TripId и дате
+      const futureBooks = registerBooks.filter((book) => {
+        return (
+          book.TripId == tripId && new Date(book.DateTime) >= currentDateTime
+        );
+      });
+
+      console.log(futureBooks);
+
+      // Удаляем найденные записи
+      await Promise.all(
+        futureBooks.map((book) => this.deleteRegisterBook(book.RegisterBookId))
+      ); // Исправлено
+
+      console.log(
+        `Удалены записи RegisterBook для TripId ${tripId}, которые позже текущей даты.`
+      );
+    } catch (error) {
+      console.error("Ошибка при удалении записей:", error.message);
     }
   }
 }

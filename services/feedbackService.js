@@ -10,12 +10,16 @@ class FeedbackService {
     return await Feedback.create(feedbackData);
   }
 
-  async updateFeedback(FeedbackId, feedbackData) {
-    const feedback = await Feedback.findByPk(FeedbackId);
+  async updateFeedback(id, feedbackData) {
+    // console.log(feedbackData);
+    const feedback = await Feedback.findOne({ where: { TicketId: id } });
+    console.log(feedback);
     if (!feedback) {
       throw new Error("Отзыв не найден");
     }
     Object.assign(feedback, feedbackData);
+    console.log("rrs");
+    console.log(feedback);
     return await feedback.save();
   }
 

@@ -8,6 +8,11 @@ const User = sequelize.define("User", {
   Email: { type: DataTypes.STRING(50), allowNull: false, unique: true },
   PhoneNumber: { type: DataTypes.STRING(20), allowNull: false },
   isGetNotifications: { type: DataTypes.BOOLEAN, allowNull: false },
+  isGetNewsletter: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
   Password: { type: DataTypes.STRING(128), allowNull: false }, // Увеличил размер для хранения хэша
   Role: {
     type: DataTypes.STRING(20),
