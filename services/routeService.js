@@ -30,9 +30,18 @@ class RouteService {
     if (!route) {
       throw new Error("Маршрут не найден");
     }
-    await route.destroy();
-  }
 
+    try {
+      await route.destroy();
+    } catch (error) {
+      if (error.name === "SequelizeForeignKeyConstraintError") {
+        throw new Error(
+          "Маршрут не может быть удален, так как он используется"
+        );
+      }
+      throw error; // Пробрасываем другие ошибки
+    }
+  }
   async getRouteId(startCity, finishCity) {
     try {
       const route = await Route.findOne({

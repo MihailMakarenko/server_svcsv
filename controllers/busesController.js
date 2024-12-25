@@ -79,9 +79,9 @@ class BusesController {
 
   // Удалить автобус
   async deleteBus(req, res) {
-    const { BusId } = req.params;
+    const { id } = req.params;
     try {
-      await BusesService.deleteBus(BusId);
+      await BusesService.deleteBus(id);
       res.status(204).send(); // Успешное удаление, но без содержимого
     } catch (error) {
       res

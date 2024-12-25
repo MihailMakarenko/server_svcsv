@@ -49,6 +49,64 @@ class RegisterBookService {
     await registerBook.destroy();
   }
 
+  async addRegisterBook(FormData, TripId, DefaultBusNumber) {
+    console.log("Перешли в метод");
+    console.log(DefaultBusNumber);
+    const Buse = await Bus.findOne({
+      where: {
+        BusNumber: DefaultBusNumber,
+      },
+    });
+    console.log("Прошли автобус");
+    console.log(Buse);
+    console.log("Прошли");
+    console.log(Buse.dataValues.BusId);
+    if (!Buse) {
+      throw new Error("Автобус не найден");
+    }
+
+    console.log("Выводим форм дата");
+    console.log(FormData);
+
+    const daysOfWeek = [
+      { day: "Monday", isActive: FormData.monday },
+      { day: "Tuesday", isActive: FormData.tuesday },
+      { day: "Wednesday", isActive: FormData.wednesday },
+      { day: "Thursday", isActive: FormData.thursday },
+      { day: "Friday", isActive: FormData.friday },
+      { day: "Saturday", isActive: FormData.saturday },
+      { day: "Sunday", isActive: FormData.sunday },
+    ];
+
+    const currentDate = new Date();
+    const endDate = new Date(currentDate.getFullYear(), 11, 31); // Конец года
+    console.log("Перед циклом");
+    for (
+      let date = currentDate;
+      date <= endDate;
+      date.setDate(date.getDate() + 1)
+    ) {
+      console.log("Мы в цикле");
+      const dayName = date.toLocaleString("en-US", { weekday: "long" });
+
+      const day = daysOfWeek.find((d) => d.day === dayName);
+
+      console.log(day.isActive);
+      if (day && day.isActive) {
+        const registerBookData = {
+          TripId,
+          BusId: Buse.dataValues.BusId, // Предположим, что Bus имеет поле id
+          DateTime: new Date(date), // Сохраняем дату
+        };
+        console.log("Перед созданием");
+        // Сохраняем каждый объект RegisterBook в базу данных
+        await RegisterBook.create(registerBookData);
+      }
+    }
+
+    return "Все активные записи успешно добавлены.";
+  }
+
   async getRegisterBookByTripIdDate(tripId, date) {
     try {
       const registerBook = await RegisterBook.findOne({

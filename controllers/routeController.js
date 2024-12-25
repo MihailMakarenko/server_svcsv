@@ -74,9 +74,9 @@ class RouteController {
 
   // Удалить маршрут
   async deleteRoute(req, res) {
-    const { RouteId } = req.params;
+    const { id } = req.params;
     try {
-      await RouteService.deleteRoute(RouteId);
+      await RouteService.deleteRoute(id);
       res.status(204).send(); // Успешное удаление, но без содержимого
     } catch (error) {
       res

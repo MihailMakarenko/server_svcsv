@@ -276,19 +276,37 @@ class ScheduleService {
 
       // Добавляем данные в рабочий лист
       schedules.forEach((schedule) => {
-        worksheet.addRow({
-          TripId: schedule.TripId || "",
-          StartTime: schedule.StartTime || "",
-          FinishTime: schedule.FinishTime || "",
-          Monday: schedule.Monday ? "+" : "-" || "",
-          Tuesday: schedule.Tuesday ? "+" : "-" || "",
-          Wednesday: schedule.Wednesday ? "+" : "-" || "",
-          Thursday: schedule.Thursday ? "+" : "-" || "",
-          Friday: schedule.Friday ? "+" : "-" || "",
-          Saturday: schedule.Saturday ? "+" : "-" || "",
-          Sunday: schedule.Sunday ? "+" : "-" || "",
-        });
+        // Проверяем, есть ли активные дни
+        const hasActiveDays =
+          schedule.Monday ||
+          schedule.Tuesday ||
+          schedule.Wednesday ||
+          schedule.Thursday ||
+          schedule.Friday ||
+          schedule.Saturday ||
+          schedule.Sunday;
+
+        if (hasActiveDays) {
+          worksheet.addRow({
+            TripId: schedule.TripId || "",
+            StartTime: schedule.StartTime || "",
+            FinishTime: schedule.FinishTime || "",
+            Monday: schedule.Monday ? "+" : "-",
+            Tuesday: schedule.Tuesday ? "+" : "-",
+            Wednesday: schedule.Wednesday ? "+" : "-",
+            Thursday: schedule.Thursday ? "+" : "-",
+            Friday: schedule.Friday ? "+" : "-",
+            Saturday: schedule.Saturday ? "+" : "-",
+            Sunday: schedule.Sunday ? "+" : "-",
+          });
+        }
       });
+
+      // Проверяем, добавлены ли данные
+      if (worksheet.rowCount === 1) {
+        console.log("Нет данных для добавления в Excel.");
+        return null; // Возвращаем null, если нет данных
+      }
 
       // Применяем стили к заголовкам
       worksheet.getRow(1).font = { bold: true };
@@ -298,18 +316,10 @@ class ScheduleService {
         fgColor: { argb: "ffb4c6e7" },
       };
       worksheet.getRow(1).border = {
-        top: {
-          style: "thin",
-        },
-        left: {
-          style: "thin",
-        },
-        bottom: {
-          style: "thin",
-        },
-        right: {
-          style: "thin",
-        },
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
       };
 
       // Центрирование содержимого ячеек
@@ -340,6 +350,94 @@ class ScheduleService {
       throw error; // Пробрасываем ошибку
     }
   }
+
+  // async exportSchedulesToExcel(startCity, finishCity) {
+  //   try {
+  //     const schedules = await this.getSchedulesByCities(startCity, finishCity);
+
+  //     const workbook = new ExcelJS.Workbook();
+  //     const worksheet = workbook.addWorksheet("Schedules");
+
+  //     // Устанавливаем заголовки
+  //     worksheet.columns = [
+  //       { header: "Номер Маршрута", key: "TripId" },
+  //       { header: "Время отправления", key: "StartTime" },
+  //       { header: "Время прибытия", key: "FinishTime" },
+  //       { header: "Понедельник", key: "Monday" },
+  //       { header: "Вторник", key: "Tuesday" },
+  //       { header: "Среда", key: "Wednesday" },
+  //       { header: "Четверг", key: "Thursday" },
+  //       { header: "Пятница", key: "Friday" },
+  //       { header: "Суббота", key: "Saturday" },
+  //       { header: "Воскресенье", key: "Sunday" },
+  //     ];
+
+  //     // Добавляем данные в рабочий лист
+  //     schedules.forEach((schedule) => {
+  //       worksheet.addRow({
+  //         TripId: schedule.TripId || "",
+  //         StartTime: schedule.StartTime || "",
+  //         FinishTime: schedule.FinishTime || "",
+  //         Monday: schedule.Monday ? "+" : "-" || "",
+  //         Tuesday: schedule.Tuesday ? "+" : "-" || "",
+  //         Wednesday: schedule.Wednesday ? "+" : "-" || "",
+  //         Thursday: schedule.Thursday ? "+" : "-" || "",
+  //         Friday: schedule.Friday ? "+" : "-" || "",
+  //         Saturday: schedule.Saturday ? "+" : "-" || "",
+  //         Sunday: schedule.Sunday ? "+" : "-" || "",
+  //       });
+  //     });
+
+  //     // Применяем стили к заголовкам
+  //     worksheet.getRow(1).font = { bold: true };
+  //     worksheet.getRow(1).fill = {
+  //       type: "pattern",
+  //       pattern: "solid",
+  //       fgColor: { argb: "ffb4c6e7" },
+  //     };
+  //     worksheet.getRow(1).border = {
+  //       top: {
+  //         style: "thin",
+  //       },
+  //       left: {
+  //         style: "thin",
+  //       },
+  //       bottom: {
+  //         style: "thin",
+  //       },
+  //       right: {
+  //         style: "thin",
+  //       },
+  //     };
+
+  //     // Центрирование содержимого ячеек
+  //     worksheet.eachRow((row) => {
+  //       row.eachCell((cell) => {
+  //         cell.alignment = { horizontal: "center", vertical: "middle" };
+  //       });
+  //     });
+
+  //     // Автоматическое определение ширины колонок
+  //     worksheet.columns.forEach((column) => {
+  //       let maxWidth = 0;
+  //       column.eachCell({ includeEmpty: true }, (cell) => {
+  //         maxWidth = Math.max(
+  //           maxWidth,
+  //           cell.value ? cell.value.toString().length : 0
+  //         );
+  //       });
+  //       column.width = maxWidth + 2; // Добавляем немного отступа
+  //     });
+
+  //     // Генерируем буфер и возвращаем его как массив байтов
+  //     const buffer = await workbook.xlsx.writeBuffer();
+  //     console.log("Excel файл успешно сгенерирован.");
+  //     return buffer; // Возвращаем массив байтов
+  //   } catch (error) {
+  //     console.error("Ошибка при экспорте расписаний в Excel:", error);
+  //     throw error; // Пробрасываем ошибку
+  //   }
+  // }
 }
 
 module.exports = new ScheduleService();

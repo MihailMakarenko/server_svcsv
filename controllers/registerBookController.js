@@ -31,14 +31,29 @@ class RegisterBookController {
 
   // Создать новую запись
   async createRegisterBook(req, res) {
-    const { DateTime, TripId, BusId } = req.body;
+    const { TripId, BusId } = req.body;
 
     try {
       const registerBook = await RegisterBookService.createRegisterBook({
-        DateTime,
         TripId,
         BusId,
       });
+      res.status(201).json(registerBook);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+
+  async addRegisterBook(req, res) {
+    const { FormData, TripId, DefaultBusNumber } = req.body;
+    console.log("Находися на добавлениии");
+    console.log(DefaultBusNumber);
+    try {
+      const registerBook = await RegisterBookService.addRegisterBook(
+        FormData,
+        TripId,
+        DefaultBusNumber
+      );
       res.status(201).json(registerBook);
     } catch (error) {
       res.status(400).json({ message: error.message });

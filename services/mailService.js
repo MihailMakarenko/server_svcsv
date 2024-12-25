@@ -40,6 +40,7 @@ const sendEmailNotification = async (email, trip, route, ticket) => {
 };
 
 const startSendingEmails = async (date) => {
+  console.log("AAAA");
   try {
     const formattedDate = date.toISOString().split("T")[0];
     console.log(formattedDate);
@@ -75,9 +76,10 @@ const startSendingEmails = async (date) => {
 };
 
 const scheduleEmailSending = () => {
+  console.log("VVV");
   setInterval(async () => {
-    await startSendingEmails(new Date("2024-01-01"));
-  }, 60000); // Интервал в миллисекундах
+    await startSendingEmails(new Date());
+  }, 10000); // Интервал в миллисекундах
 };
 
 const sendNewsletter = async (header, mainText) => {

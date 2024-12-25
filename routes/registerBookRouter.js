@@ -6,4 +6,6 @@ router.get("/", RegisterBookController.fetchRegisterBooksByDate);
 
 router.delete("/Future/:TripId", RegisterBookController.removeFutureTripsById);
 
+router.post("/addRegisterBook", RegisterBookController.addRegisterBook);
+
 module.exports = router;

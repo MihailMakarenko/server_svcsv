@@ -74,7 +74,7 @@ class FullInformController {
         trips.map(async (trip) => {
           const routeDetail = await RouteService.getRouteById(trip.RouteId);
           const scheduleDetail = await ScheduleService.getSchedulesByTripId(
-            trip.RouteId
+            trip.TripId
           );
 
           // Проверяем наличие расписания
